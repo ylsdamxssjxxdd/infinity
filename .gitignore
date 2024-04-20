@@ -1,0 +1,7 @@
+.qtcreator/
+io/
+venv_infinity/
+infinity.pyproject.user
+main.exe
+res/__pycache__
+pysidedeploy.spec

@@ -1,0 +1,8 @@
+{
+    "files": [
+        "MessageDelegate.qml",
+        "main.py",
+        "main.qml",
+        "res/style.qrc"
+    ]
+}
