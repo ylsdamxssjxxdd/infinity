@@ -14,7 +14,7 @@ ApplicationWindow {
     minimumHeight: 400 // 最小高度
     visible: true
 
-    property int show_rectangle_border: 1 // 是否显示布局用的矩形框边界
+    property int show_rectangle_border: 0 // 是否显示布局用的矩形框边界
 
     // python中定义的qml对象
     Bridge {
@@ -124,10 +124,10 @@ ApplicationWindow {
                         ListView {
                             id: listView
                             anchors.fill: parent // 尽量充满父窗口
+                            spacing: 30 // 每个元素的垂直方向间距
                             // 需要显示的列模型，模型中的内容会被及时显示
                             model: ListModel {
                                 id: chatModel
-
                             }
                             // 代理，每个元素的显示方式
                             delegate: MessageDelegate {}
@@ -171,9 +171,9 @@ ApplicationWindow {
                     id: input_rectangle
                     Layout.fillWidth: true // 按照布局伸展
                     height: 50
-                    border.color: "black"
+                    border.color: "blue"
                     border.width: 1
-
+                    radius: 5
 
                     ScrollView {
                         anchors.fill: parent // 尽量充满父窗口
@@ -182,6 +182,13 @@ ApplicationWindow {
                             placeholderText: qsTr("请输入聊天内容")
                             wrapMode: TextArea.Wrap            // 自动换行
                             font.pixelSize: 16
+
+                            // 设置边框
+                            Rectangle {
+                                color: "transparent"  // 背景透明
+                                border.color: "gray"
+
+                            }
                         }
                     }
 
