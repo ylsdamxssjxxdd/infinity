@@ -15,10 +15,20 @@ ApplicationWindow {
     visible: true
 
     property int show_rectangle_border: 0 // 是否显示布局用的矩形框边界
+    property int response_index: 0 // 控制流式输出时输出在同一个消息框里
+    property string response_text: "" // 记录流式输出时输出的全部文字
 
     // python中定义的qml对象
     Bridge {
         id: bridge
+    }
+
+    // 连接python那边的信号
+    Component.onCompleted: {
+        bridge.textChanged.connect(function(text) {
+            response_text += text
+            chatModel.set(response_index,{"name":"model","content": response_text})
+        });
     }
 
     //定义快捷键
@@ -76,7 +86,7 @@ ApplicationWindow {
                         id: title_button
                         anchors.fill: parent // 尽量充满父窗口
                         highlighted: true // 按钮高亮
-                        text: "装载模型"
+                        text: "负载端点：http://localhost:8080/v1"
                         onClicked: {
                             console.log("title_button")
                         }
@@ -211,8 +221,14 @@ ApplicationWindow {
                         onClicked: {
                             if(input_TextArea.text !== "")
                             {
-                                chatModel.append({"name":"user","content": input_TextArea.text})
-                                input_TextArea.text = ""
+                                var input_text = input_TextArea.text
+                                input_TextArea.text = "" // 清空输入区文本
+                                chatModel.append({"name":"user","content": input_text})
+
+                                response_text = "" // 清空上一次的消息
+                                response_index = chatModel.count // 模型中的代理的个数
+                                bridge.stream_Response(input_text)
+                                
                             }
 
                         }
