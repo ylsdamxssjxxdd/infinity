@@ -2,7 +2,7 @@ from PySide6.QtCore import QObject, Slot, Signal
 from PySide6.QtQml import QmlElement
 import asyncio
 import openai
-
+import threading
 # 导入将资源文件编译成的py文件，每次有资源更新需要手动执行 pyside6-rcc style.qrc -o style_rc.py
 import res.style_rc
 # 定义在qml中与python连接的接口的名称
@@ -21,7 +21,10 @@ class Bridge(QObject):
             api_key="sk-no-key-required"
         )
 
-    @Slot(str, result=str)
+    @Slot(str)
+    def Response(self, inputs):
+        threading.Thread(target=self.stream_Response, args=(inputs,), daemon=True).start()
+        
     def stream_Response(self, inputs):
         messages = [
             {"role": "system", "content": "You are a helpful assistant."},
@@ -42,4 +45,3 @@ class Bridge(QObject):
                 response_text = response_text + chunk.choices[0].delta.content
                 self.textChanged.emit(chunk.choices[0].delta.content)  # 发送给qml
         print(response_text)
-        return response_text

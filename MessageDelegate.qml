@@ -19,7 +19,7 @@ Item {
         anchors.left: messageContainer.left // 锚点很重要
 
         font.pixelSize: 16
-        text: model.name // 确保这里引用的是模型的属性
+        text: model.name // 确保这里引用的是模型的属性，model对应到listView的model属性
         wrapMode: TextArea.Wrap  // 确保文本能够根据宽度自动换行
         readOnly: true
 
@@ -66,10 +66,8 @@ Item {
         text: "D"
         onClicked: {
             console.log("delete")
-            var index = listView.indexAt(role_TextArea.x, role_TextArea.y); // 获取当前项的索引
-            if (index !== -1) {
-                chatModel.remove(index);  // 从模型中删除项
-            }
+            chatModel.remove(model.index)  // 从模型中删除项, model.index就是当前代理的索引
+
         }
     }
 

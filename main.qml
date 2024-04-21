@@ -227,7 +227,7 @@ ApplicationWindow {
 
                                 response_text = "" // 清空上一次的消息
                                 response_index = chatModel.count // 模型中的代理的个数
-                                bridge.stream_Response(input_text)
+                                bridge.Response(input_text)
                                 
                             }
 
