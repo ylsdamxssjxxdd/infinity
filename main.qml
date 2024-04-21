@@ -15,7 +15,7 @@ ApplicationWindow {
     visible: true
 
     property int show_rectangle_border: 0 // 是否显示布局用的矩形框边界
-    property int response_index: 0 // 控制流式输出时输出在同一个消息框里
+    property int response_message_delegate_index: 0 // 控制流式输出时输出在同一个消息框里
     property string response_text: "" // 记录流式输出时输出的全部文字
 
     // python中定义的qml对象
@@ -25,10 +25,19 @@ ApplicationWindow {
 
     // 连接python那边的信号
     Component.onCompleted: {
-        bridge.textChanged.connect(function(text) {
-            response_text += text
-            chatModel.set(response_index,{"name":"model","content": response_text})
-        });
+        bridge.textChanged.connect(
+            function(text) // 相当于槽函数
+            {
+                response_text += text;
+                if(chatModel.count >= response_message_delegate_index) // 防止越界
+                {
+                    chatModel.set(response_message_delegate_index,{"role":"model","content": response_text});
+                   
+                    listView.positionViewAtEnd() // 滚到最底部
+                
+                }
+            }
+        );
     }
 
     //定义快捷键
@@ -60,12 +69,14 @@ ApplicationWindow {
                     height: 50
                     border.color: "black"
                     border.width: show_rectangle_border
+                    
 
                     Button {
                         id: old_button
                         anchors.fill: parent // 尽量充满父窗口
                         highlighted: true // 按钮高亮
                         text: "历史"
+                        enabled: false
                         onClicked: {
                             console.log("old_button")
                         }
@@ -86,6 +97,7 @@ ApplicationWindow {
                         id: title_button
                         anchors.fill: parent // 尽量充满父窗口
                         highlighted: true // 按钮高亮
+                        enabled: false
                         text: "负载端点：http://localhost:8080/v1"
                         onClicked: {
                             console.log("title_button")
@@ -93,7 +105,7 @@ ApplicationWindow {
                     }
                 }
 
-                // 设置按钮
+                // 新建按钮
                 Rectangle {
                     id: settings_rectangle
                     width: 50
@@ -128,20 +140,23 @@ ApplicationWindow {
                     border.width: show_rectangle_border
 
                     ScrollView {
+                        id: scrollView
                         anchors.fill: parent // 尽量充满父窗口
                         clip: true // 这个属性能确保子元素不会在父元素的边界之外绘制
                         // 列视图
                         ListView {
                             id: listView
                             anchors.fill: parent // 尽量充满父窗口
-                            spacing: 30 // 每个元素的垂直方向间距
+                            spacing: 10 // 每个元素的垂直方向间距
                             // 需要显示的列模型，模型中的内容会被及时显示
                             model: ListModel {
                                 id: chatModel
                             }
                             // 代理，每个元素的显示方式
                             delegate: MessageDelegate {}
+
                         }
+
                     }
 
 
@@ -169,6 +184,7 @@ ApplicationWindow {
                         anchors.fill: parent // 尽量充满父窗口
                         highlighted: true // 按钮高亮
                         text: "上传"
+                        enabled: false
                         onClicked: {
                             console.log("upload_button")
                         }
@@ -221,13 +237,25 @@ ApplicationWindow {
                         onClicked: {
                             if(input_TextArea.text !== "")
                             {
+                                // 预处理用户输入
                                 var input_text = input_TextArea.text
                                 input_TextArea.text = "" // 清空输入区文本
-                                chatModel.append({"name":"user","content": input_text})
-
+                                chatModel.append({"role":"user","content": input_text}) // 添加到模型中显示出来
+                                listView.positionViewAtEnd() // 滚到最底部
                                 response_text = "" // 清空上一次的消息
-                                response_index = chatModel.count // 模型中的代理的个数
-                                bridge.Response(input_text)
+                                response_message_delegate_index = chatModel.count // 模型中的代理的个数
+
+                                // 获取每个消息组件的role和content
+                                var inputs = [];
+                                for (var i = 0; i < chatModel.count; i++) {
+                                    var item = chatModel.get(i);
+                                    inputs.push({"role": item.role, "content": item.content});
+                                }
+                                
+                                // 消息发给python进行处理
+                                bridge.Response(inputs)
+
+                                // 后续操作
                                 
                             }
 

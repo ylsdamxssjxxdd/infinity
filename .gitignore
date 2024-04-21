@@ -5,3 +5,4 @@ infinity.pyproject.user
 main.exe
 res/__pycache__
 pysidedeploy.spec
+__pycache__

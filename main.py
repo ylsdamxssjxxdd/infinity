@@ -1,12 +1,9 @@
 import sys
-import asyncio
-import openai
 from pathlib import Path
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine
 
-import bridge_qml
-
+import bridge # 与qml交互的类
 
 if __name__ == '__main__':
     app = QGuiApplication(sys.argv) # 初始化事件

@@ -1,13 +1,16 @@
 from PySide6.QtCore import QObject, Slot, Signal
 from PySide6.QtQml import QmlElement
-import asyncio
-import openai
-import threading
+from PySide6.QtWidgets import QApplication
 # 导入将资源文件编译成的py文件，每次有资源更新需要手动执行 pyside6-rcc style.qrc -o style_rc.py
 import res.style_rc
 # 定义在qml中与python连接的接口的名称
 QML_IMPORT_NAME = "io.qt.textproperties"
 QML_IMPORT_MAJOR_VERSION = 1
+
+import openai
+import threading
+import json
+
 
 # 可以在qml中使用的类，继承QObject
 @QmlElement
@@ -21,15 +24,13 @@ class Bridge(QObject):
             api_key="sk-no-key-required"
         )
 
-    @Slot(str)
+    # 访问模型
+    @Slot(list)
     def Response(self, inputs):
+        # 新开一个线程运行
         threading.Thread(target=self.stream_Response, args=(inputs,), daemon=True).start()
         
-    def stream_Response(self, inputs):
-        messages = [
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": inputs}
-        ]
+    def stream_Response(self, messages):
         stream = self.client.chat.completions.create(
             model='gpt-3.5-turbo',
             messages=messages,
@@ -38,10 +39,13 @@ class Bridge(QObject):
 
         response_text = ""
 
+        # 获取流式输出内容
         for chunk in stream:
             stream_response_text = chunk.choices[0].delta.content
-            print(stream_response_text)
             if(stream_response_text != None):
-                response_text = response_text + chunk.choices[0].delta.content
-                self.textChanged.emit(chunk.choices[0].delta.content)  # 发送给qml
-        print(response_text)
+                self.textChanged.emit(stream_response_text)  # 发送给qml
+
+    # 复制内容到剪切板
+    @Slot(str)
+    def copyToClipboard(self,text):
+        QApplication.clipboard().setText(text)
