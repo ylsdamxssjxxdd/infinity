@@ -26,6 +26,6 @@ jobs:
         python -m pip install -r requirements.txt
     - name: Deploy infinity # 步骤名
       run: | # 打包应用
-        pyside6-deploy main.py
+        pyside6-deploy -f main.py
 
 
