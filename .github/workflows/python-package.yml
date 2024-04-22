@@ -1,0 +1,27 @@
+name: Python package
+
+on:
+  push: # 推送时触发工作流
+    branches: [ "main" ]
+
+# 具体任务
+jobs: 
+  build: # 任务名称
+    name: start build # 工作名称
+    runs-on: windows-latest # 系统镜像
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11"]
+
+    steps: # 具体步骤
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }} # 安装python
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies  # 安装依赖
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install -r requirements.txt
+
