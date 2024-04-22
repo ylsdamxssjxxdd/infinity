@@ -12,16 +12,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.11"]
+        python-version: ["3.11"] # 指定python版本
 
     steps: # 具体步骤
-    - uses: actions/checkout@v3
-    - name: Set up Python ${{ matrix.python-version }} # 安装python
-      uses: actions/setup-python@v3
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies  # 安装依赖
-      run: |
+    - uses: actions/checkout@v3 # 进入该项目目录
+    - name: Set up Python ${{ matrix.python-version }} # 步骤名
+      uses: actions/setup-python@v3 # 安装python
+      with: # 完成后执行
+        python-version: ${{ matrix.python-version }} # 查看python版本
+    - name: Install dependencies  # 步骤名
+      run: | # 安装依赖
         python -m pip install --upgrade pip
         python -m pip install -r requirements.txt
+    - name: Deploy infinity # 步骤名
+      run: | # 打包应用
+        pyside6-deploy main.py
+
 
