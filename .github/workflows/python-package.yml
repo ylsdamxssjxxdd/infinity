@@ -60,7 +60,9 @@ jobs:
 
     # 打tag标签并推送exe
     - name: Generate tag name
-      run: echo "RELEASE_TAG=$(date +'%Y%m%d%H%M%S')" >> GITHUB_ENV
+      run: |
+        date = Get-Date -Format "yyyyMMddHHmmss"
+        echo "RELEASE_TAG=date" >> env:GITHUB_ENV
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
