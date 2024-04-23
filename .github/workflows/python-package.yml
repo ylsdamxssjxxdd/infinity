@@ -19,60 +19,54 @@ jobs:
     
     steps: # 具体步骤
     # ---------安装依赖------------
-    # - uses: actions/checkout@v3 # 进入该项目目录
-    # - name: Set up Python ${{ matrix.python-version }} # 步骤名
-    #   uses: actions/setup-python@v3 # 安装python
-    #   with: # 完成后执行
-    #     python-version: ${{ matrix.python-version }} # 查看python版本
-    # - name: Install dependencies  # 步骤名
-    #   run: |
-    #     python -m pip install --upgrade pip
-    #     python -m pip install -r requirements.txt
+    - uses: actions/checkout@v3 # 进入该项目目录
+    - name: Set up Python ${{ matrix.python-version }} # 步骤名
+      uses: actions/setup-python@v3 # 安装python
+      with: # 完成后执行
+        python-version: ${{ matrix.python-version }} # 查看python版本
+    - name: Install dependencies  # 步骤名
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install -r requirements.txt
       
-    # # ------------配置Dependency Walker------------
-    # - name: Checkout code
-    #   uses: actions/checkout@v3
+    # ------------配置Dependency Walker------------
+    - name: Checkout code
+      uses: actions/checkout@v3
   
-    # - name: Create directories
-    #   run: |
-    #     New-Item -ItemType Directory -Force -Path "C:\Users\runneradmin\AppData\Local\Nuitka\Nuitka\Cache\downloads\depends\x86_64"
+    - name: Create directories
+      run: |
+        New-Item -ItemType Directory -Force -Path "C:\Users\runneradmin\AppData\Local\Nuitka\Nuitka\Cache\downloads\depends\x86_64"
       
-    # - name: Download Dependency Walker
-    #   run: |
-    #     Invoke-WebRequest -Uri "https://dependencywalker.com/depends22_x64.zip" -OutFile "temp_depends.zip"
+    - name: Download Dependency Walker
+      run: |
+        Invoke-WebRequest -Uri "https://dependencywalker.com/depends22_x64.zip" -OutFile "temp_depends.zip"
   
-    # - name: Create temp directory
-    #   run: |
-    #     New-Item -ItemType Directory -Force -Path temp/depends
+    - name: Create temp directory
+      run: |
+        New-Item -ItemType Directory -Force -Path temp/depends
 
-    # - name: Move downloaded file
-    #   run: |
-    #     Move-Item -Path temp_depends.zip -Destination temp/depends/depends22_x64.zip
+    - name: Move downloaded file
+      run: |
+        Move-Item -Path temp_depends.zip -Destination temp/depends/depends22_x64.zip
 
-    # - name: Extract Dependency Walker
-    #   run: |
-    #     Expand-Archive -Path temp/depends/depends22_x64.zip -DestinationPath C:\Users\runneradmin\AppData\Local\Nuitka\Nuitka\Cache\downloads\depends\x86_64
-    # # ------------打包应用------------
-    # - name: Deploy infinity # 步骤名
-    #   run: |
-    #     pyside6-deploy -f main.py
+    - name: Extract Dependency Walker
+      run: |
+        Expand-Archive -Path temp/depends/depends22_x64.zip -DestinationPath C:\Users\runneradmin\AppData\Local\Nuitka\Nuitka\Cache\downloads\depends\x86_64
+    # ------------打包应用------------
+    - name: Deploy infinity # 步骤名
+      run: |
+        pyside6-deploy -f main.py
 
 
     # 从该tag打上一个release标签
-    - name: Set Tag
-      id: set-tag
-      run: |
-        CURRENT_DATE = Get-Date -Format "yyyyMMdd"
-        Write-Output "::set-output name=CURRENT_TAG::CURRENT_DATE"
-  
-
+    
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ steps.set-tag.outputs.CURRENT_TAG }} # tag号
+        tag_name: latest # tag号
         release_name: infinity # 本次发布名称
         draft: false
         prerelease: false
