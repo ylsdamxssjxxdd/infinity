@@ -57,29 +57,18 @@ jobs:
     #   run: |
     #     pyside6-deploy -f main.py
 
-    # 上传 EXE 文件作为 GitHub 发布资产
+
+    # 从该tag打上一个release标签
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
+        tag_name: 1
+        release_name: test
         draft: false
         prerelease: false
-
-    # # 从该tag打上一个release标签(这里会output一些参数 后面才能使用)
-    # - name: Create Release
-    #   id: create_release
-    #   uses: actions/create-release@v1
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   with:
-    #     tag_name: 1
-    #     release_name: test
-    #     draft: false
-    #     prerelease: false
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
       env:
