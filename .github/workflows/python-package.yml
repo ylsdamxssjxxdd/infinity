@@ -62,8 +62,9 @@ jobs:
     - name: Set Tag
       id: set-tag
       run: |
-        CURRENT_DATE=(date +"%Y%m%d")
-        echo "::set-output name=CURRENT_TAG::CURRENT_DATE"
+        CURRENT_DATE = Get-Date -Format "yyyyMMdd"
+        Write-Output "::set-output name=CURRENT_TAG::CURRENT_DATE"
+  
 
     - name: Create Release
       id: create_release
