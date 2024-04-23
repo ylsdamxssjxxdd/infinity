@@ -34,9 +34,9 @@ jobs:
       run: |
         New-Item -ItemType Directory -Force -Path "C:\Users\runneradmin\AppData\Local\Nuitka\Nuitka\Cache\downloads\depends\x86_64"
       
-        - name: Download Dependency Walker
-        run: |
-          Invoke-WebRequest -Uri "https://dependencywalker.com/depends22_x64.zip" -OutFile "temp_depends.zip"
+    - name: Download Dependency Walker
+      run: |
+        Invoke-WebRequest -Uri "https://dependencywalker.com/depends22_x64.zip" -OutFile "temp_depends.zip"
   
     - name: Create temp directory
       run: |
