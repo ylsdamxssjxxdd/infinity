@@ -79,3 +79,4 @@ jobs:
         asset_path: ./main.exe
         asset_name: infinity.exe
         asset_content_type: application/x-msdownload
+        
