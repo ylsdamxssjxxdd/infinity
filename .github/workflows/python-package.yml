@@ -26,7 +26,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install -r requirements.txt
       
-      # ------------配置Dependency Walker------------
+    # ------------配置Dependency Walker------------
     - name: Checkout code
       uses: actions/checkout@v3
   
@@ -34,15 +34,22 @@ jobs:
       run: |
         New-Item -ItemType Directory -Force -Path "C:\Users\runneradmin\AppData\Local\Nuitka\Nuitka\Cache\downloads\depends\x86_64"
       
-    - name: Download Dependency Walker
-      uses: actions/download-artifact@v3
-      with:
-        name: depends22_x64.zip
-        path: temp/depends
-    # ------------打包应用------------
+        - name: Download Dependency Walker
+        run: |
+          Invoke-WebRequest -Uri "https://dependencywalker.com/depends22_x64.zip" -OutFile "temp_depends.zip"
+  
+    - name: Create temp directory
+      run: |
+        New-Item -ItemType Directory -Force -Path temp/depends
+
+    - name: Move downloaded file
+      run: |
+        Move-Item -Path temp_depends.zip -Destination temp/depends/depends22_x64.zip
+
     - name: Extract Dependency Walker
       run: |
         Expand-Archive -Path temp/depends/depends22_x64.zip -DestinationPath C:\Users\runneradmin\AppData\Local\Nuitka\Nuitka\Cache\downloads\depends\x86_64
+    # ------------打包应用------------
     - name: Deploy infinity # 步骤名
       run: |
         pyside6-deploy -f main.py
