@@ -70,9 +70,9 @@ jobs:
       id: get_version
       shell: pwsh
       run: |
-        tag = "{{ github.ref }}"
-        version = tag -replace "refs/tags/", ""
+        version = "{{ github.ref }}" -replace "refs/tags/", ""
         echo "::set-output name=VERSION::$version"
+
 
 
     # 从该tag打上一个release标签(这里会output一些参数 后面才能使用)
