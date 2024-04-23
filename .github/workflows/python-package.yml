@@ -30,32 +30,32 @@ jobs:
         python -m pip install -r requirements.txt
       
     # ------------配置Dependency Walker------------
-    # - name: Checkout code
-    #   uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
   
-    # - name: Create directories
-    #   run: |
-    #     New-Item -ItemType Directory -Force -Path "C:\Users\runneradmin\AppData\Local\Nuitka\Nuitka\Cache\downloads\depends\x86_64"
+    - name: Create directories
+      run: |
+        New-Item -ItemType Directory -Force -Path "C:\Users\runneradmin\AppData\Local\Nuitka\Nuitka\Cache\downloads\depends\x86_64"
       
-    # - name: Download Dependency Walker
-    #   run: |
-    #     Invoke-WebRequest -Uri "https://dependencywalker.com/depends22_x64.zip" -OutFile "temp_depends.zip"
+    - name: Download Dependency Walker
+      run: |
+        Invoke-WebRequest -Uri "https://dependencywalker.com/depends22_x64.zip" -OutFile "temp_depends.zip"
   
-    # - name: Create temp directory
-    #   run: |
-    #     New-Item -ItemType Directory -Force -Path temp/depends
+    - name: Create temp directory
+      run: |
+        New-Item -ItemType Directory -Force -Path temp/depends
 
-    # - name: Move downloaded file
-    #   run: |
-    #     Move-Item -Path temp_depends.zip -Destination temp/depends/depends22_x64.zip
+    - name: Move downloaded file
+      run: |
+        Move-Item -Path temp_depends.zip -Destination temp/depends/depends22_x64.zip
 
-    # - name: Extract Dependency Walker
-    #   run: |
-    #     Expand-Archive -Path temp/depends/depends22_x64.zip -DestinationPath C:\Users\runneradmin\AppData\Local\Nuitka\Nuitka\Cache\downloads\depends\x86_64
+    - name: Extract Dependency Walker
+      run: |
+        Expand-Archive -Path temp/depends/depends22_x64.zip -DestinationPath C:\Users\runneradmin\AppData\Local\Nuitka\Nuitka\Cache\downloads\depends\x86_64
     # ------------打包应用------------
-    # - name: Deploy infinity # 步骤名
-    #   run: |
-    #     pyside6-deploy -f main.py
+    - name: Deploy infinity # 步骤名
+      run: |
+        pyside6-deploy -f main.py
 
 
     # 从该tag打上一个release标签
